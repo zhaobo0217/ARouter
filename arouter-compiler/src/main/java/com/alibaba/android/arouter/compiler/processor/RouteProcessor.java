@@ -191,7 +191,7 @@ public class RouteProcessor extends BaseProcessor {
                     Map<String, Integer> paramsType = new HashMap<>();
                     Map<String, Autowired> injectConfig = new HashMap<>();
                     injectParamCollector(element, paramsType, injectConfig);
-                    List<RouteMeta> routeMetas = null;
+                    List<RouteMeta> routeMetas;
                     if (types.isSubtype(tm, type_Activity)) {
                         // Activity
                         logger.info(">>> Found activity route: " + tm.toString() + " <<<");

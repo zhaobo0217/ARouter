@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * https://m.aliyun.com/test/activity1?name=老王&age=23&boy=true&high=180
  */
-@Route(path = "/test/activity1", name = "测试用 Activity")
+@Route(path = "/test/activity1", name = "测试用 Activity", extraPaths = {"/test/activity1/extra"})
 public class Test1Activity extends BaseActivity {
     @Autowired
     int age = 10;

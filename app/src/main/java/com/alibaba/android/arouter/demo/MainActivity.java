@@ -150,6 +150,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .withObject("map", map)
                         .navigation();
                 break;
+            case R.id.autoInjectExtra:
+                ARouter.getInstance().build("/test/activity1/extra")
+                        .withString("name", "老王")
+                        .withInt("age", 18)
+                        .withBoolean("boy", true)
+                        .withLong("high", 180)
+                        .withString("url", "https://a.b.c")
+                        .withSerializable("ser", testSerializable)
+                        .withParcelable("pac", testParcelable)
+                        .withObject("obj", testObj)
+                        .withObject("objList", objList)
+                        .withObject("map", map)
+                        .navigation();
+                break;
             case R.id.navByName:
                 ((HelloService) ARouter.getInstance().build("/yourservicegroupname/hello").navigation()).sayHello("mike");
                 break;
