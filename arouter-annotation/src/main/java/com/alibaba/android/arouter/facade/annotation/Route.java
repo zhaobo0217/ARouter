@@ -19,7 +19,7 @@ public @interface Route {
     /**
      * Path of route
      */
-    String path();
+    String[] path();
 
     /**
      * Used to merger routes, the group name MUST BE USE THE COMMON WORDS !!!
