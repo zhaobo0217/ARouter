@@ -4,6 +4,8 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.facade.enums.RouteType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.Element;
@@ -60,6 +62,35 @@ public class RouteMeta {
      */
     public static RouteMeta build(RouteType type, Class<?> destination, String path, String group, Map<String, Integer> paramsType, int priority, int extra) {
         return new RouteMeta(type, null, destination, null, path, group, paramsType, priority, extra);
+    }
+
+    /**
+     * for version which has extraPaths
+     *
+     * @param route        route
+     * @param rawType      rawType
+     * @param type         type
+     * @param paramsType   paramsType
+     * @param injectConfig injectConfig
+     * @return list contains extra paths
+     */
+    public static List<RouteMeta> build(Route route, Element rawType, RouteType type, Map<String, Integer> paramsType, Map<String, Autowired> injectConfig) {
+        List<RouteMeta> result = new ArrayList<>();
+        RouteMeta routeMeta = new RouteMeta(route, rawType, type, paramsType);
+        routeMeta.setInjectConfig(injectConfig);
+        result.add(routeMeta);
+        String[] extraPaths = route.extraPaths();
+        if (extraPaths != null) {
+            for (String extraPath : extraPaths) {
+                if (extraPath == null || extraPath.length() == 0) {
+                    continue;
+                }
+                RouteMeta extraRouteMeta = new RouteMeta(type, rawType, null, route.name(), extraPath, route.group(), paramsType, route.priority(), route.extras());
+                extraRouteMeta.setInjectConfig(injectConfig);
+                result.add(extraRouteMeta);
+            }
+        }
+        return result;
     }
 
     /**
