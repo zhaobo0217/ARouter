@@ -191,18 +191,20 @@ public class RouteProcessor extends BaseProcessor {
                     Map<String, Integer> paramsType = new HashMap<>();
                     Map<String, Autowired> injectConfig = new HashMap<>();
                     injectParamCollector(element, paramsType, injectConfig);
-
+                    List<RouteMeta> routeMetas = null;
                     if (types.isSubtype(tm, type_Activity)) {
                         // Activity
                         logger.info(">>> Found activity route: " + tm.toString() + " <<<");
-                        routeMeta = new RouteMeta(route, element, RouteType.ACTIVITY, paramsType);
+                        routeMetas = RouteMeta.build(route, element, RouteType.ACTIVITY, paramsType, injectConfig);
                     } else {
                         // Fragment
                         logger.info(">>> Found fragment route: " + tm.toString() + " <<<");
-                        routeMeta = new RouteMeta(route, element, RouteType.parse(FRAGMENT), paramsType);
+                        routeMetas = RouteMeta.build(route, element, RouteType.parse(FRAGMENT), paramsType, injectConfig);
                     }
-
-                    routeMeta.setInjectConfig(injectConfig);
+                    for (RouteMeta rMetas : routeMetas) {
+                        categories(rMetas);
+                    }
+                    continue;
                 } else if (types.isSubtype(tm, iProvider)) {         // IProvider
                     logger.info(">>> Found provider route: " + tm.toString() + " <<<");
                     routeMeta = new RouteMeta(route, element, RouteType.PROVIDER, null);
