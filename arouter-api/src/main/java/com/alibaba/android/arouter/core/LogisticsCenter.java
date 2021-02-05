@@ -88,13 +88,14 @@ public class LogisticsCenter {
                             + " should implements one of IRouteRoot/IProviderGroup/IInterceptorGroup.");
                 }
             } catch (Exception e) {
-                logger.error(TAG,"register class error:" + className, e);
+                logger.error(TAG, "register class error:" + className, e);
             }
         }
     }
 
     /**
      * method for arouter-auto-register plugin to register Routers
+     *
      * @param routeRoot IRouteRoot implementation class in the package: com.alibaba.android.arouter.core.routers
      */
     private static void registerRouteRoot(IRouteRoot routeRoot) {
@@ -106,6 +107,7 @@ public class LogisticsCenter {
 
     /**
      * method for arouter-auto-register plugin to register Interceptors
+     *
      * @param interceptorGroup IInterceptorGroup implementation class in the package: com.alibaba.android.arouter.core.routers
      */
     private static void registerInterceptor(IInterceptorGroup interceptorGroup) {
@@ -117,6 +119,7 @@ public class LogisticsCenter {
 
     /**
      * method for arouter-auto-register plugin to register Providers
+     *
      * @param providerGroup IProviderGroup implementation class in the package: com.alibaba.android.arouter.core.routers
      */
     private static void registerProvider(IProviderGroup providerGroup) {
@@ -251,6 +254,7 @@ public class LogisticsCenter {
             postcard.setType(routeMeta.getType());
             postcard.setPriority(routeMeta.getPriority());
             postcard.setExtra(routeMeta.getExtra());
+            buildExtraParams(postcard, routeMeta.getExtraParmas());
 
             Uri rawUri = postcard.getUri();
             if (null != rawUri) {   // Try to set params into bundle.
@@ -299,6 +303,21 @@ public class LogisticsCenter {
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     * set extra params from dynamic path
+     *
+     * @param postcard    postcard
+     * @param extraParmas extrapatmas
+     */
+    private static void buildExtraParams(Postcard postcard, Map<String, String> extraParmas) {
+        if (extraParmas == null || extraParmas.isEmpty() || postcard == null) {
+            return;
+        }
+        for (Map.Entry<String, String> entry : extraParmas.entrySet()) {
+            postcard.withString(entry.getKey(), entry.getValue());
         }
     }
 
@@ -356,7 +375,7 @@ public class LogisticsCenter {
     }
 
     public synchronized static void addRouteGroupDynamic(String groupName, IRouteGroup group) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        if (Warehouse.groupsIndex.containsKey(groupName)){
+        if (Warehouse.groupsIndex.containsKey(groupName)) {
             // If this group is included, but it has not been loaded
             // load this group first, because dynamic route has high priority.
             Warehouse.groupsIndex.get(groupName).getConstructor().newInstance().loadInto(Warehouse.routes);
