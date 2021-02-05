@@ -66,7 +66,7 @@ public class PathNode {
         if (pathNode != null) {
             return pathNode;
         }
-        return wildcardNode != null && pathNodeString.equals(name) ? wildcardNode : null;
+        return wildcardNode != null && pathNodeString.equals(wildcardNode.getName()) ? wildcardNode : null;
     }
 
     public RouteMeta matchPathNodeData(String path) {
