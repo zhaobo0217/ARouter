@@ -29,6 +29,7 @@ public class RouteMeta {
     private String name;
 
     private Map<String, Autowired> injectConfig;  // Cache inject config.
+    private Map<String, String> extraParmas; //extra parmas
 
     public RouteMeta() {
     }
@@ -226,6 +227,14 @@ public class RouteMeta {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Map<String, String> getExtraParmas() {
+        return extraParmas;
+    }
+
+    public void setExtraParmas(Map<String, String> extraParmas) {
+        this.extraParmas = extraParmas;
     }
 
     @Override

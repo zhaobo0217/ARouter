@@ -71,18 +71,23 @@ public class PathNode {
         }
         PathNode dest = this;
         String[] destPath = buildPathArray(path);
-        Map<String, String> paramsMap = new HashMap<>();
+        // match wildcard params
+        Map<String, String> paramsMap = null;
         for (String node : destPath) {
             PathNode cur = dest.matchPathNode(node);
             if (cur == null) {
                 break;
             }
             if (cur.isWildcardNode() && cur.getParamName() != null) {
+                if (paramsMap == null) {
+                    paramsMap = new HashMap<>();
+                }
                 paramsMap.put(cur.getParamName(), node);
             }
             dest = cur;
         }
         RouteMeta routeMeta = dest.getRouteMeta();
+        routeMeta.setExtraParmas(paramsMap);
         return routeMeta;
     }
 
