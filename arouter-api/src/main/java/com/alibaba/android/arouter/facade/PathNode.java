@@ -18,6 +18,27 @@ public class PathNode {
     private Map<String, PathNode> childNodes;
     private PathNode wildcardNode;
 
+    public static void addPathToRoot(PathNode root, String path, RouteMeta routeMeta) {
+        if (root == null || path == null) {
+            return;
+        }
+        String[] nodes = buildPathArray(path);
+        if (nodes == null) {
+            return;
+        }
+        PathNode pathNode = root;
+        for (int i = 0; i < nodes.length; i++) {
+            String nodePath = nodes[i];
+            PathNode curPath = pathNode.getChildPathNode(nodePath);
+            if (curPath == null) {
+                curPath = new PathNode(nodePath);
+                pathNode.putPathNode(nodePath, curPath);
+            }
+            pathNode = curPath;
+        }
+        pathNode.setRouteMeta(routeMeta);
+    }
+
     public PathNode(String name) {
         this.name = name;
     }
@@ -44,7 +65,28 @@ public class PathNode {
         return wildcardNode != null && pathNodeString.equals(name) ? wildcardNode : null;
     }
 
-    public PathNode matchPathNode(String pathNodeString) {
+    public RouteMeta matchPathNodeData(String path) {
+        if (path == null) {
+            return null;
+        }
+        PathNode dest = this;
+        String[] destPath = buildPathArray(path);
+        Map<String, String> paramsMap = new HashMap<>();
+        for (String node : destPath) {
+            PathNode cur = dest.matchPathNode(node);
+            if (cur == null) {
+                break;
+            }
+            if (cur.isWildcardNode() && cur.getParamName() != null) {
+                paramsMap.put(cur.getParamName(), node);
+            }
+            dest = cur;
+        }
+        RouteMeta routeMeta = dest.getRouteMeta();
+        return routeMeta;
+    }
+
+    private PathNode matchPathNode(String pathNodeString) {
         if (pathNodeString == null) {
             return null;
         }
@@ -70,6 +112,10 @@ public class PathNode {
         return null;
     }
 
+    public void setRouteMeta(RouteMeta routeMeta) {
+        this.routeMeta = routeMeta;
+    }
+
     public String getName() {
         return name;
     }
@@ -83,6 +129,16 @@ public class PathNode {
             return false;
         }
         return Pattern.matches(REGEX, path);
+    }
+
+    private static String[] buildPathArray(String path) {
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.lastIndexOf("/"));
+        }
+        return path.split("/");
     }
 
 }
