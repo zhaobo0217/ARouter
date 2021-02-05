@@ -91,7 +91,9 @@ public class PathNode {
             dest = cur;
         }
         RouteMeta routeMeta = dest.getRouteMeta();
-        routeMeta.setExtraParmas(paramsMap);
+        if (routeMeta != null) {
+            routeMeta.setExtraParmas(paramsMap);
+        }
         return routeMeta;
     }
 
@@ -99,10 +101,8 @@ public class PathNode {
         if (pathNodeString == null) {
             return null;
         }
-        if (matchWildcardNode(pathNodeString)) {
-            return wildcardNode;
-        }
-        return childNodes == null ? null : childNodes.get(pathNodeString);
+        PathNode result = childNodes == null ? null : childNodes.get(pathNodeString);
+        return result != null ? result : wildcardNode;
     }
 
     public boolean isWildcardNode() {

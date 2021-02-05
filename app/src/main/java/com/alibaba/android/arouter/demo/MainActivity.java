@@ -177,6 +177,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 这个页面主动指定了Group名
                 ARouter.getInstance().build("/module/2", "m2").navigation();
                 break;
+            case R.id.navToMoudle2Wildcard:
+                ARouter.getInstance().build("/module/2c879777", "m2").navigation();
+                break;
             case R.id.destroy:
                 ARouter.getInstance().destroy();
                 break;
