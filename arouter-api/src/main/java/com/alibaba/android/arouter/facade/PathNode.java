@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
  */
 public class PathNode {
     private static final String REGEX = "^<:[a-zA-Z0-9_]+>$";
-    private String name;
+    private static final String REGEX_PATH = ".*<:[a-zA-Z0-9_]+>.*";
+    private final String name;
     private RouteMeta routeMeta;
     private String paramName;
     private Map<String, PathNode> childNodes;
@@ -27,8 +28,7 @@ public class PathNode {
             return;
         }
         PathNode pathNode = root;
-        for (int i = 0; i < nodes.length; i++) {
-            String nodePath = nodes[i];
+        for (String nodePath : nodes) {
             PathNode curPath = pathNode.getChildPathNode(nodePath);
             if (curPath == null) {
                 curPath = new PathNode(nodePath);
@@ -39,11 +39,15 @@ public class PathNode {
         pathNode.setRouteMeta(routeMeta);
     }
 
+    public static boolean isWildcardPath(String path) {
+        return path != null && Pattern.matches(REGEX_PATH, path);
+    }
+
     public PathNode(String name) {
         this.name = name;
     }
 
-    public void putPathNode(String childPath, PathNode childNode) {
+    void putPathNode(String childPath, PathNode childNode) {
         if (childPath == null || childPath.isEmpty() || childNode == null) {
             return;
         }
@@ -54,7 +58,7 @@ public class PathNode {
         if (childNodes == null) {
             childNodes = new HashMap<>();
         }
-        childNode.putPathNode(childPath, childNode);
+        childNodes.put(childPath, childNode);
     }
 
     public PathNode getChildPathNode(String pathNodeString) {
