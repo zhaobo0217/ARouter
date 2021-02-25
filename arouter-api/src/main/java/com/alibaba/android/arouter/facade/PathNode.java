@@ -80,7 +80,8 @@ public class PathNode {
         for (String node : destPath) {
             PathNode cur = dest.matchPathNode(node);
             if (cur == null) {
-                break;
+                //not match. return null.
+                return null;
             }
             if (cur.isWildcardNode() && cur.getParamName() != null) {
                 if (paramsMap == null) {
